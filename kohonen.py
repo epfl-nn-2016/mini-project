@@ -18,9 +18,9 @@ def kohonen():
     labels = np.loadtxt('labels.txt')
 
     # select 4 digits    
-    name = 'Marc-oliver Gewaltig' # REPLACE BY YOUR OWN NAME
+    name = 'Seth Vanderwilt' # REPLACE BY YOUR OWN NAME
     targetdigits = name2digits(name) # assign the four digits that should be used
-    print targetdigits # output the digits that were selected
+    print(targetdigits) # output the digits that were selected
     # this selects all data vectors that corresponds to one of the four digits
     data = data[np.logical_or.reduce([labels==x for x in targetdigits]),:]
     
