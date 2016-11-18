@@ -31,7 +31,7 @@ def kohonen():
     
     #set the width of the neighborhood via the width of the gaussian that
     #describes it
-    sigma = 2.0
+    sigma = 3.0
     
     #initialise the centers randomly
     centers = np.random.rand(size_k**2, dim) * data_range
@@ -55,7 +55,7 @@ def kohonen():
 
     # for visualization, you can use this:
     for i in range(size_k**2):
-        plb.subplot(size_k,size_k,i)
+        plb.subplot(size_k,size_k,i+1)
         
         plb.imshow(np.reshape(centers[i,:], [28, 28]),interpolation='bilinear')
         plb.axis('off')
