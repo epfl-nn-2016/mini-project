@@ -23,15 +23,18 @@ def kohonen():
     print(targetdigits) # output the digits that were selected
     # this selects all data vectors that corresponds to one of the four digits
     data = data[np.logical_or.reduce([labels==x for x in targetdigits]),:]
+
+    # get the label for each data vector corresponding to one of the four digits
+    labels = labels[np.logical_or.reduce([labels==x for x in targetdigits])]
     
     dy, dx = data.shape
     
     #set the size of the Kohonen map. In this case it will be 6 X 6
-    size_k = 6
+    size_k = 6 # default 6, also tried 7, 8, 10
     
     #set the width of the neighborhood via the width of the gaussian that
     #describes it
-    sigma = 3.0
+    sigma = 3.0 # default 3, also tried 0.5, 1, 2, 5
     
     #initialise the centers randomly
     centers = np.random.rand(size_k**2, dim) * data_range
@@ -40,29 +43,52 @@ def kohonen():
     neighbor = np.arange(size_k**2).reshape((size_k, size_k))
 
     #set the learning rate
-    eta = 0.9 # HERE YOU HAVE TO SET YOUR OWN LEARNING RATE
+    eta = 0.5 # HERE YOU HAVE TO SET YOUR OWN LEARNING RATE
     
     #set the maximal iteration count
-    tmax = 5000 # this might or might not work; use your own convergence criterion
+    tmax = 10000 # this might or might not work; use your own convergence criterion
+    #tmax = 500 # this might or might not work; use your own convergence criterion
     
     #set the random order in which the datapoints should be presented
     i_random = np.arange(tmax) % dy
     np.random.shuffle(i_random)
     
+    # NOTE change to false if not on question 5
+    decreasing_width = True
+    print("initial sigma: " + str(sigma))
     for t, i in enumerate(i_random):
+        if decreasing_width:
+            sigma *= 0.9999 # decrease by 0.1%
         som_step(centers, data[i,:],neighbor,eta,sigma)
+    print("final sigma: " + str(sigma))
+ 
+    # Our centers
+    print(centers)
 
+    # NOTE assign each center the label of the nearest datapoint
+    assigned_digit = []
+    for ci in range(len(centers)):
+        nearest_datapoint = np.argmin(np.sum((centers[ci] - data[:])**2, 1))
+        # Get label of nearest datapoint
+        assigned_digit.append(int(labels[nearest_datapoint]))
 
     # for visualization, you can use this:
     for i in range(size_k**2):
-        plb.subplot(size_k,size_k,i+1)
+        ax = plb.subplot(size_k,size_k,i+1)
+        ax.set_title(assigned_digit[i])
         
         plb.imshow(np.reshape(centers[i,:], [28, 28]),interpolation='bilinear')
         plb.axis('off')
+
+    # fix display problem
+    plb.subplots_adjust(hspace = 0.5)
         
     # leave the window open at the end of the loop
     plb.show()
     plb.draw()
+
+
+
    
     
 
